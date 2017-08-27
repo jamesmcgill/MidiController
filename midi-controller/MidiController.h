@@ -3,6 +3,8 @@
 #include "WindowsVersionHelper.h"
 #include <iostream>
 #include <functional>
+#include <array>
+#include <bitset>
 
 #define USING_APP_MANIFEST
 #define WIN32_LEAN_AND_MEAN
@@ -10,8 +12,45 @@
 
 namespace midi
 {
+//------------------------------------------------------------------------------
+constexpr size_t MAX_CONTROLLERS = 128;
+using State = std::array<int, MAX_CONTROLLERS>;
+
+//------------------------------------------------------------------------------
+class MidiControllerTracker
+{
+public:
+	State lastState;
+	State currentState;
+	std::bitset<MAX_CONTROLLERS> dirtyMask = 0;
+
+public:
+	MidiControllerTracker()
+	{
+		reset();
+	}
+
+	void onEvent(int controllerId, int value)
+	{
+		currentState[controllerId] = value;
+		dirtyMask.set(controllerId, true);
+	}
+
+	void flush()
+	{
+		dirtyMask.reset();
+		lastState = currentState;
+	}
+
+	void reset()
+	{
+		memset(this, 0, sizeof(MidiControllerTracker));
+	}
+};
+
+//------------------------------------------------------------------------------
 static CRITICAL_SECTION g_criticalSection;
-std::function<void(int controllerId, int value)> g_onControllerEvent;
+static std::function<void(int controllerId, int value)> g_onControllerEvent;
 
 //------------------------------------------------------------------------------
 static void
