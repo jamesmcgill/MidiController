@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{9AE996CD-EA6E-40BE-9FEF-8583C1E073A6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MidiController</RootNamespace>
+    <RootNamespace>midi-controller</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
